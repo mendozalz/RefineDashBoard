@@ -1,17 +1,13 @@
 import { useForm, useSelect } from "@refinedev/core";
+import React from "react";
 
-const EditProduct = () => {
-  const { onFinish, mutation, query } = useForm({
-    action: "edit",
+const CreateProduct = () => {
+  const { onFinish, mutation } = useForm({
+    action: "create",
     resource: "products",
-    id: "123",
   });
 
-  const record = query?.data?.data;
-
-  const { options } = useSelect({
-    resource: "categories",
-  });
+  const { options } = useSelect({ resource: "categories" });
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,40 +23,21 @@ const EditProduct = () => {
   return (
     <form onSubmit={onSubmit}>
       <label htmlFor="name">Name</label>
-      <input type="text" id="name" name="name" defaultValue={record?.name} />
+      <input type="text" id="name" name="name" />
 
       <label htmlFor="description">Description</label>
-      <textarea
-        id="description"
-        name="description"
-        defaultValue={record?.description}
-      />
+      <textarea id="description" name="description" />
 
       <label htmlFor="price">Price</label>
-      <input
-        type="text"
-        id="price"
-        name="price"
-        pattern="\d*\.?\d*"
-        defaultValue={record?.price}
-      />
+      <input type="number" id="price" name="price" step=".01" />
 
       <label htmlFor="material">Material</label>
-      <input
-        type="text"
-        id="material"
-        name="material"
-        defaultValue={record?.material}
-      />
+      <input type="text" id="material" name="material" />
 
-      <label htmlFor="category">Category</label>
+      <label htmlFor="category">Category ID</label>
       <select id="category" name="category">
         {options?.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-            selected={record?.category.id == option.value}
-          >
+          <option key={option.value} value={option.value}>
             {option.label}
           </option>
         ))}
@@ -72,4 +49,4 @@ const EditProduct = () => {
   );
 };
 
-export default EditProduct;
+export default CreateProduct;

@@ -2,9 +2,36 @@ import { DataProvider } from "@refinedev/core";
 
 const API_URL = "https://api.fake-rest.refine.dev";
 
+const fetcher = async (url: string, options?: RequestInit) => {
+  return fetch(url, {
+    ...options,
+    headers: {
+      ...options?.headers,
+      Authorization: localStorage.getItem("accessToken"),
+    },
+  });
+};
+
 const dataProvider: DataProvider = {
+  getMany: async ({ resource, ids }) => {
+    const params = new URLSearchParams();
+
+    if (ids) {
+      ids.forEach((id) => params.append("id", id));
+    }
+
+    const response = await fetcher(
+      `${API_URL}/${resource}?${params.toString()}`
+    );
+
+    if (response.status < 200 || response.status > 299) throw response;
+
+    const data = await response.json();
+
+    return { data };
+  },
   getOne: async ({ id, resource }) => {
-    const response = await fetch(`${API_URL}/${resource}/${id}`);
+    const response = await fetcher(`${API_URL}/${resource}/${id}`);
 
     if (response.status < 200 || response.status > 299) {
       throw response;
@@ -28,12 +55,21 @@ const dataProvider: DataProvider = {
     const data = await response.json();
     return { data };
   },
-  getList: async ({ resource, pagination, filters, sorters, meta }) => {
+  getList: async ({ resource, pagination, filters, sorters }) => {
+    console.log("=== Debug Info ===");
+
+    console.log("Meta:", JSON.stringify(sorters, null, 2));
     const params = new URLSearchParams();
 
     if (pagination) {
-      params.append("_start", (pagination.current - 1) * pagination.pageSize);
-      params.append("_end", pagination.current * pagination.pageSize);
+      const start = (
+        (pagination.current! - 1) *
+        pagination.pageSize!
+      ).toString();
+      const end = (pagination.current! * pagination.pageSize!).toString();
+
+      params.append("_start", start);
+      params.append("_end", end);
     }
 
     if (sorters && sorters.length > 0) {
@@ -49,17 +85,31 @@ const dataProvider: DataProvider = {
       });
     }
 
-    const response = await fetch(`${API_URL}/${resource}?${params.toString()}`);
+    const response = await fetcher(
+      `${API_URL}/${resource}?${params.toString()}`
+    );
 
     if (response.status < 200 || response.status > 299) throw response;
     const data = await response.json();
+    const total = Number(response.headers.get("x-total-count"));
     return {
       data,
-      total: 0,
+      total,
     };
   },
-  create: () => {
-    throw new Error("Not implemented");
+  create: async ({ resource, variables }) => {
+    const response = await fetcher(`${API_URL}/${resource}`, {
+      method: "POST",
+      body: JSON.stringify(variables),
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+
+    if (response.status < 200 || response.status > 299) throw response;
+
+    const data = await response.json();
+    return { data };
   },
   deleteOne: () => {
     throw new Error("Not implemented");
