@@ -21,11 +21,11 @@ export const authProvider: AuthProvider = {
       return { success: true };
     }
 
-    return { success: false };
+    return { success: false, redirectTo: "/" };
   },
   logout: async () => {
     localStorage.removeItem("accessToken");
-    return { success: true };
+    return { success: true, redirectTo: "/login" };
   },
   onError: async (error) => {
     if (error?.status === 401) {
