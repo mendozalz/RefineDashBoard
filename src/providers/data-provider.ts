@@ -1,6 +1,7 @@
 import { DataProvider } from "@refinedev/core";
 
-const API_URL = "https://api.fake-rest.refine.dev";
+//const API_URL = "https://api.fake-rest.refine.dev";
+const API_URL = "http://localhost:1337/api";
 
 const fetcher = async (url: string, options?: RequestInit) => {
   return fetch(url, {
@@ -29,7 +30,7 @@ const dataProvider: DataProvider = {
     const data = await response.json();
 
     return { data };
-  },
+  }, //
   getOne: async ({ id, resource }) => {
     const response = await fetcher(`${API_URL}/${resource}/${id}`);
 
@@ -55,31 +56,67 @@ const dataProvider: DataProvider = {
     const data = await response.json();
     return { data };
   },
-  getList: async ({ resource, pagination, filters, sorters }) => {
-    console.log("=== Debug Info ===");
+  // getList: async ({ resource, pagination, filters, sorters }) => {
+  //   const params = new URLSearchParams();
 
-    console.log("Meta:", JSON.stringify(sorters, null, 2));
+  //   if (pagination) {
+  //     const start = (
+  //       (pagination.current! - 1) *
+  //       pagination.pageSize!
+  //     ).toString();
+  //     const end = (pagination.current! * pagination.pageSize!).toString();
+
+  //     params.append("_start", start);
+  //     params.append("_end", end);
+  //   }
+
+  //   if (sorters && sorters.length > 0) {
+  //     params.append("_sort", sorters.map((sorter) => sorter.field).join(","));
+  //     params.append("_order", sorters.map((sorter) => sorter.order).join(","));
+  //   }
+
+  //   if (filters && filters.length > 0) {
+  //     filters.forEach((filter) => {
+  //       if ("field" in filter && filter.operator === "eq") {
+  //         params.append(filter.field, filter.value);
+  //       }
+  //     });
+  //   }
+
+  //   const response = await fetcher(
+  //     `${API_URL}/${resource}?${params.toString()}`
+  //   );
+
+  //   if (response.status < 200 || response.status > 299) throw response;
+  //   const data = await response.json();
+  //   const total = Number(response.headers.get("x-total-count"));
+  //   return {
+  //     data,
+  //     total,
+  //   };
+  // },
+  getList: async ({ resource, pagination, filters, sorters }) => {
     const params = new URLSearchParams();
 
+    // Configuración de paginación y ordenación...
     if (pagination) {
       const start = (
         (pagination.current! - 1) *
         pagination.pageSize!
       ).toString();
       const end = (pagination.current! * pagination.pageSize!).toString();
-
       params.append("_start", start);
       params.append("_end", end);
     }
 
-    if (sorters && sorters.length > 0) {
-      params.append("_sort", sorters.map((sorter) => sorter.field).join(","));
-      params.append("_order", sorters.map((sorter) => sorter.order).join(","));
+    if (sorters) {
+      params.append("_sort", sorters.map((s) => s.field).join(","));
+      params.append("_order", sorters.map((s) => s.order).join(","));
     }
 
-    if (filters && filters.length > 0) {
+    if (filters) {
       filters.forEach((filter) => {
-        if ("field" in filter && filter.operator === "eq") {
+        if (filter.operator === "eq") {
           params.append(filter.field, filter.value);
         }
       });
@@ -88,14 +125,14 @@ const dataProvider: DataProvider = {
     const response = await fetcher(
       `${API_URL}/${resource}?${params.toString()}`
     );
+    if (!response.ok) throw response;
 
-    if (response.status < 200 || response.status > 299) throw response;
-    const data = await response.json();
+    let rawData = await response.json();
+
+    let data = Array.isArray(rawData.data) ? rawData.data : [rawData.data];
+
     const total = Number(response.headers.get("x-total-count"));
-    return {
-      data,
-      total,
-    };
+    return { data, total };
   },
   create: async ({ resource, variables }) => {
     const response = await fetcher(`${API_URL}/${resource}`, {

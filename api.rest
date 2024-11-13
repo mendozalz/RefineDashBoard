@@ -1,0 +1,2 @@
+GET http://localhost:1337/api/trading-server-machines
+

@@ -2,13 +2,15 @@ import { MarkdownField, NumberField, Show, TextField } from "@refinedev/antd";
 import { useOne, useShow } from "@refinedev/core";
 import { Typography } from "antd";
 
-const ShowProduct = () => {
+const ShowCostumers = () => {
   const {
     query: { data, isLoading },
   } = useShow();
 
+  console.log(`ShowCostumer data: ${data}`);
+
   const { data: categoryData, isLoading: categoryIsLoading } = useOne({
-    resource: "categories",
+    resource: "trading-server-machines",
     id: data?.data?.category.id || "",
     queryOptions: {
       enabled: !!data?.data,
@@ -16,7 +18,7 @@ const ShowProduct = () => {
   });
 
   return (
-    <Show isLoading={isLoading}>
+    <Show isLoading={isLoading} title="Severs">
       <Typography.Title level={5}>Id</Typography.Title>
       <TextField value={data?.data?.id} />
 
@@ -40,4 +42,4 @@ const ShowProduct = () => {
   );
 };
 
-export default ShowProduct;
+export default ShowCostumers;
