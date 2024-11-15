@@ -3,7 +3,7 @@ import { useBack, useOne } from "@refinedev/core";
 import { Button, Typography } from "antd";
 import { Link, useParams } from "react-router-dom"; // Para la navegación
 
-const ShowServers = () => {
+const ShowAccounts = () => {
   const { id } = useParams();
 
   const { data, isLoading } = useOne({
@@ -65,20 +65,12 @@ const ShowServers = () => {
 
       {serverData && (
         <>
-          <Typography.Title level={5}>Ip</Typography.Title>
-          <TextField value={serverData.ip} />
-          <Typography.Title level={5}>User</Typography.Title>
-          <MarkdownField value={serverData.user} />
-          <Typography.Title level={5}>Password</Typography.Title>
-          <MarkdownField value={serverData.password} />
-          <Typography.Title level={5}>Hosting Provider</Typography.Title>
-          <MarkdownField value={serverData.hostingProvider} />
-          <Typography.Title level={5}>Location</Typography.Title>
-          <MarkdownField value={serverData.location} />
+          <Typography.Title level={5}>Broker</Typography.Title>
+          <TextField value={serverData.broker} />
         </>
       )}
     </Show>
   );
 };
 
-export default ShowServers;
+export default ShowAccounts;

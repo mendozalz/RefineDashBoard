@@ -1,7 +1,6 @@
-import { useTable, List, ShowButton, EditButton } from "@refinedev/antd";
-import { Space, Table, Input, Tooltip, Button } from "antd";
-import { useState } from "react";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { useTable, List, ShowButton } from "@refinedev/antd";
+import { Table, Button } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const ListCustomers = () => {
   const { tableProps } = useTable({
@@ -22,6 +21,25 @@ const ListCustomers = () => {
 
   //const maskPassword = (password: any) => "•".repeat(password.length);
 
+  const navigate = useNavigate();
+
+  const renderAccounts = (server: any, record: any) => {
+    const isVisible = true;
+
+    return (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {isVisible ? server : "•".repeat(server?.length || 0)}
+        <Button
+          type="text"
+          onClick={() =>
+            navigate(`/trading-server-machines/${record.id}/accounts`)
+          }
+          icon={<ShowButton hideText size="small" recordItemId={record?.id} />}
+        />
+      </div>
+    );
+  };
+
   return (
     <List>
       <Table {...tableProps} rowKey="id">
@@ -41,7 +59,7 @@ const ListCustomers = () => {
                     <ShowButton
                       hideText
                       size="small"
-                      recordItemId={record.id}
+                      recordItemId={`${record.id}`}
                     />
                   }
                 />
@@ -51,7 +69,31 @@ const ListCustomers = () => {
         />
         <Table.Column dataIndex="server" title="Server" />
         <Table.Column dataIndex="broker" title="Broker" />
-        <Table.Column dataIndex="account" title="Account" />
+        {/* <Table.Column
+          dataIndex="account"
+          title="Account"
+          render={(account, record) => (
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {account} 
+              <Button
+                type="text"
+                onClick={() =>
+                  navigate(`/trading-server-machines/${record.id}/accounts`)
+                }
+                icon={
+                  <ShowButton hideText size="small" recordItemId={record.id} />
+                }
+              />
+            </div>
+          )}
+        /> */}
+        // ... otras columnas ...
+        <Table.Column
+          title="Acciones"
+          render={
+            (_, record) => renderAccounts(record.account, record) // Pasa el server real
+          }
+        />
         <Table.Column
           dataIndex="funding_account"
           title={
@@ -61,95 +103,6 @@ const ListCustomers = () => {
           }
         />
         <Table.Column dataIndex="statusCostumer" title="Status" />
-        {/* <Table.Column dataIndex="caducidad_server" title="Caducidad" />
-        <Table.Column dataIndex="documentId" title="Document ID" /> */}
-        {/* 
-        <Table.Column dataIndex="location" title="Location" />
-        <Table.Column dataIndex="vps" title="VPS" />
-        <Table.Column dataIndex="ip" title="Ip" />
-        <Table.Column dataIndex="user" title="User" />
-        <Table.Column
-          dataIndex="password"
-          title="Password"
-          render={(password, record) => {
-            const isVisible = passwordVisibility[record.id] || false; // Valor por defecto: false (oculto)
-
-            return (
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {isVisible ? password : "•".repeat(password.length)}
-                <Button
-                  type="text"
-                  icon={
-                    isVisible ? (
-                      <EyeTwoTone
-                        onPointerEnterCapture={undefined}
-                        onPointerLeaveCapture={undefined}
-                      />
-                    ) : (
-                      <EyeInvisibleOutlined
-                        onPointerEnterCapture={undefined}
-                        onPointerLeaveCapture={undefined}
-                      />
-                    )
-                  }
-                  onClick={() => togglePasswordVisibility(record.id)} // Pasamos el ID del registro
-                  style={{ marginLeft: 8 }}
-                />
-              </div>
-            );
-          }}
-        /> 
-        <Table.Column dataIndex="platform" title="Platform" />
-
-         <Table.Column
-          dataIndex="passwordAcount"
-          title="Password Acount"
-          render={(password, record) => {
-            const isVisible = passwordVisibility[record.id] || false; // Valor por defecto: false (oculto)
-
-            return (
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {isVisible ? password : "•".repeat(password.length)}
-                <Button
-                  type="text"
-                  icon={
-                    isVisible ? (
-                      <EyeTwoTone
-                        onPointerEnterCapture={undefined}
-                        onPointerLeaveCapture={undefined}
-                      />
-                    ) : (
-                      <EyeInvisibleOutlined
-                        onPointerEnterCapture={undefined}
-                        onPointerLeaveCapture={undefined}
-                      />
-                    )
-                  }
-                  onClick={() => togglePasswordVisibility(record.id)} // Pasamos el ID del registro
-                  style={{ marginLeft: 8 }}
-                />
-              </div>
-            );
-          }}
-        /> 
-        <Table.Column dataIndex="bots_installed" title="Bots Installed" />
-        <Table.Column dataIndex="createdAt" title="Creación" />
-        <Table.Column dataIndex="updatedAt" title="Actualización" />
-        <Table.Column dataIndex="publishedAt" title="Publicación" />
-        <Table.Column dataIndex="vendor" title="Vendor" />
-        <Table.Column dataIndex="costumer" title="Costumer" /> */}
-
-        {/* Columna de Acciones */}
-        {/* <Table.Column
-          title="Actions"
-          render={(_, record) => (
-            <Space>
-              <ShowButton hideText size="small" recordItemId={record.id} />
-              <EditButton hideText size="small" recordItemId={record.id} />
-              {record.id}
-            </Space>
-          )}
-        /> */}
       </Table>
     </List>
   );

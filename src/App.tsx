@@ -25,6 +25,7 @@ import "antd/dist/reset.css";
 import ListCustomers from "./pages/costumers/ListCostumers";
 import ShowMachines from "./pages/costumers/ShowMachines";
 import ShowServers from "./pages/costumers/ShowServers";
+import ShowAccounts from "./pages/costumers/ShowAccounts";
 
 function App(): JSX.Element {
   return (
@@ -38,37 +39,21 @@ function App(): JSX.Element {
               routerProvider={routerProvider}
               notificationProvider={useNotificationProvider}
               resources={[
-                {
-                  name: "protected-products",
-                  list: "/products",
-                  show: "/products/:id",
-                  edit: "/products/:id/edit",
-                  create: "/products/create",
-                  meta: { label: "Fila 1" },
-                },
+                // {
+                //   name: "protected-products",
+                //   list: "/products",
+                //   show: "/products/:id",
+                //   edit: "/products/:id/edit",
+                //   create: "/products/create",
+                //   meta: { label: "Fila 1" },
+                // },
                 {
                   name: "trading-server-machines",
                   list: "/trading-server-machines",
                   show: "/trading-server-machines/:id",
                   edit: "/trading-server-machines/:id/edit",
                   create: "/trading-server-machines/create",
-                  meta: {
-                    label: "Trading Machine",
-                    nested: {
-                      servers: {
-                        show: "/trading-server-machines/:id/servers",
-                      },
-                    },
-                  },
                 },
-                // {
-                //   name: "servers",
-                //   list: "/servers",
-                //   show: "/servers/:id",
-                //   edit: "/servers/:id/edit",
-                //   create: "/servers/create",
-                //   meta: { label: "Servidores" },
-                // },
               ]}
             >
               <Routes>
@@ -105,6 +90,7 @@ function App(): JSX.Element {
                     <Route index element={<ListCustomers />} />
                     <Route path=":id" element={<ShowMachines />} />
                     <Route path=":id/servers" element={<ShowServers />} />
+                    <Route path=":id/accounts" element={<ShowAccounts />} />
                     <Route path=":id/edit" element={<EditProduct />} />
                     <Route path="create" element={<CreateProduct />} />
                   </Route>
