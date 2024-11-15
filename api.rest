@@ -1,2 +1,7 @@
-GET http://localhost:1337/api/trading-server-machines
+#GET http://localhost:1337/api/trading-server-machines/
 
+
+#GET http://localhost:1337/api/trading-server-machines/cajau8rziepy23z9a11l7df7
+
+
+GET https://api.fake-rest.refine.dev/

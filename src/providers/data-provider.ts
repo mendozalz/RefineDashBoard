@@ -30,9 +30,11 @@ const dataProvider: DataProvider = {
     const data = await response.json();
 
     return { data };
-  }, //
+  },
   getOne: async ({ id, resource }) => {
-    const response = await fetcher(`${API_URL}/${resource}/${id}`);
+    const response = await fetcher(
+      `${API_URL}/${resource}?filters[id][$eq]=${id}`
+    );
 
     if (response.status < 200 || response.status > 299) {
       throw response;
@@ -42,6 +44,17 @@ const dataProvider: DataProvider = {
 
     return { data };
   },
+  // getOne: async ({ id, resource }) => {
+  //   const response = await fetcher(`${API_URL}/${resource}/${id}`);
+
+  //   if (response.status < 200 || response.status > 299) {
+  //     throw response;
+  //   }
+
+  //   const data = await response.json();
+
+  //   return { data };
+  // },
   update: async ({ resource, id, variables }) => {
     const response = await fetch(`${API_URL}/${resource}/${id}`, {
       method: "PATCH",

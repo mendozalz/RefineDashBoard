@@ -9,11 +9,12 @@ const ShowProduct = () => {
 
   const { data: categoryData, isLoading: categoryIsLoading } = useOne({
     resource: "categories",
-    id: data?.data?.category.id || "",
+    id: data?.data?.id || "",
     queryOptions: {
       enabled: !!data?.data,
     },
   });
+  console.log(`Proviene de ShowProducts: ${data?.data.id}`);
 
   return (
     <Show isLoading={isLoading}>

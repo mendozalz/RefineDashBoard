@@ -46,12 +46,12 @@ function App(): JSX.Element {
                   meta: { label: "Fila 1" },
                 },
                 {
-                  name: "inventek-costumer",
-                  list: "/listcostumers",
-                  show: "/listcostumers/:id",
-                  edit: "/listcostumers/:id/edit",
-                  create: "/listcostumers/create",
-                  meta: { label: "listcostumers" },
+                  name: "trading-server-machines",
+                  list: "/trading-server-machines",
+                  show: "/trading-server-machines/:id",
+                  edit: "/trading-server-machines/:id/edit",
+                  create: "/trading-server-machines/create",
+                  meta: { label: "trading-server-machines" },
                 },
               ]}
             >
@@ -85,7 +85,7 @@ function App(): JSX.Element {
                     <Route path=":id/edit" element={<EditProduct />} />
                     <Route path="create" element={<CreateProduct />} />
                   </Route>
-                  <Route path="/listcostumers">
+                  <Route path="/trading-server-machines">
                     <Route index element={<ListCustomers />} />
                     <Route path=":id" element={<ShowCostumers />} />
                     <Route path=":id/edit" element={<EditProduct />} />
