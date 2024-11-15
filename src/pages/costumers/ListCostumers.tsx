@@ -9,7 +9,7 @@ const ListCustomers = () => {
     syncWithLocation: true,
   });
 
-  const [passwordVisibility, setPasswordVisibility] = useState({});
+  //const [passwordVisibility, setPasswordVisibility] = useState({});
 
   console.log("Data Source:", tableProps?.dataSource);
 
@@ -24,15 +24,13 @@ const ListCustomers = () => {
 
   return (
     <List>
-      <h1>Clientes</h1>
       <Table {...tableProps} rowKey="id">
         <Table.Column dataIndex="id" title="id" />
-        <Table.Column dataIndex="trading_machine" title="TM" />
         <Table.Column
-          dataIndex="server"
-          title="Server"
+          dataIndex="trading_machine"
+          title="TM"
           render={(server, record) => {
-            const isVisible = passwordVisibility[record.id] || true; // Valor por defecto: false (oculto)
+            const isVisible = true;
 
             return (
               <div style={{ display: "flex", alignItems: "center" }}>
@@ -51,6 +49,7 @@ const ListCustomers = () => {
             );
           }}
         />
+        <Table.Column dataIndex="server" title="Server" />
         <Table.Column dataIndex="broker" title="Broker" />
         <Table.Column dataIndex="account" title="Account" />
         <Table.Column
@@ -141,7 +140,7 @@ const ListCustomers = () => {
         <Table.Column dataIndex="costumer" title="Costumer" /> */}
 
         {/* Columna de Acciones */}
-        <Table.Column
+        {/* <Table.Column
           title="Actions"
           render={(_, record) => (
             <Space>
@@ -150,7 +149,7 @@ const ListCustomers = () => {
               {record.id}
             </Space>
           )}
-        />
+        /> */}
       </Table>
     </List>
   );

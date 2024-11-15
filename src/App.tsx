@@ -23,7 +23,8 @@ import {
 } from "@refinedev/antd";
 import "antd/dist/reset.css";
 import ListCustomers from "./pages/costumers/ListCostumers";
-import ShowCostumers from "./pages/costumers/ShowCostumers";
+import ShowMachines from "./pages/costumers/ShowMachines";
+import ShowServers from "./pages/costumers/ShowServers";
 
 function App(): JSX.Element {
   return (
@@ -51,8 +52,23 @@ function App(): JSX.Element {
                   show: "/trading-server-machines/:id",
                   edit: "/trading-server-machines/:id/edit",
                   create: "/trading-server-machines/create",
-                  meta: { label: "trading-server-machines" },
+                  meta: {
+                    label: "Trading Machine",
+                    nested: {
+                      servers: {
+                        show: "/trading-server-machines/:id/servers",
+                      },
+                    },
+                  },
                 },
+                // {
+                //   name: "servers",
+                //   list: "/servers",
+                //   show: "/servers/:id",
+                //   edit: "/servers/:id/edit",
+                //   create: "/servers/create",
+                //   meta: { label: "Servidores" },
+                // },
               ]}
             >
               <Routes>
@@ -87,10 +103,14 @@ function App(): JSX.Element {
                   </Route>
                   <Route path="/trading-server-machines">
                     <Route index element={<ListCustomers />} />
-                    <Route path=":id" element={<ShowCostumers />} />
+                    <Route path=":id" element={<ShowMachines />} />
+                    <Route path=":id/servers" element={<ShowServers />} />
                     <Route path=":id/edit" element={<EditProduct />} />
                     <Route path="create" element={<CreateProduct />} />
                   </Route>
+                  {/* <Route path="/servers">
+                    <Route path=":id" element={<ShowServers />} />
+                  </Route> */}
                 </Route>
                 <Route
                   element={
