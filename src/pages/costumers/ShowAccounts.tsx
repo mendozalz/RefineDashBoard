@@ -1,10 +1,12 @@
 import { MarkdownField, Show, TextField } from "@refinedev/antd";
 import { useBack, useOne } from "@refinedev/core";
 import { Button, Typography } from "antd";
-import { Link, useParams } from "react-router-dom"; // Para la navegación
+import { Link, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Para la navegación
 
 const ShowAccounts = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const { data, isLoading } = useOne({
     resource: "trading-server-machines",
@@ -18,7 +20,9 @@ const ShowAccounts = () => {
 
   console.log("Datos del servidor:", serverData);
 
-  const back = useBack();
+  const handleBack = () => {
+    navigate("/trading-server-machines");
+  };
 
   return (
     <Show
@@ -27,7 +31,7 @@ const ShowAccounts = () => {
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <Button
             variant="text"
-            onClick={() => back()}
+            onClick={handleBack}
             style={{
               border: 0,
               background: "transparent",
@@ -65,8 +69,20 @@ const ShowAccounts = () => {
 
       {serverData && (
         <>
+          <Typography.Title level={5}>Account</Typography.Title>
+          <TextField value={serverData.account} />
           <Typography.Title level={5}>Broker</Typography.Title>
           <TextField value={serverData.broker} />
+          <Typography.Title level={5}>Password</Typography.Title>
+          <TextField value={serverData.passwordAcount} />
+          <Typography.Title level={5}>Bot</Typography.Title>
+          <TextField value={serverData.bots_installed} />
+          <Typography.Title level={5}>Vendor</Typography.Title>
+          <TextField value={serverData.vendor} />
+          <Typography.Title level={5}>Costumer</Typography.Title>
+          <TextField value={serverData.costumer} />
+          <Typography.Title level={5}>Status</Typography.Title>
+          <TextField value={serverData.statusCostumer} />
         </>
       )}
     </Show>
