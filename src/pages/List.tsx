@@ -29,6 +29,11 @@ const ListProducts = () => {
     defaultValue: getDefaultFilter("category.id", filters, "eq"),
   });
 
+  // console.log(
+  //   "Datos de la tabla:",
+  //   JSON.stringify(tableProps.dataSource, null, 2)
+  // );
+
   return (
     <List>
       <h1>Productos</h1>

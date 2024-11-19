@@ -26,10 +26,12 @@ import ListCustomers from "./pages/costumers/ListCostumers";
 import ShowMachines from "./pages/costumers/ShowMachines";
 import ShowServers from "./pages/costumers/ShowServers";
 import ShowAccounts from "./pages/costumers/ShowAccounts";
+import EditTradingMachine from "./pages/costumers/EditTradingMachine";
+import CreateTradingMachine from "./pages/costumers/CreateTradingMachine";
 
 function App(): JSX.Element {
   return (
-    <BrowserRouter>
+    (<BrowserRouter>
       <ConfigProvider>
         <AntdApp>
           <DevtoolsProvider>
@@ -39,14 +41,14 @@ function App(): JSX.Element {
               routerProvider={routerProvider}
               notificationProvider={useNotificationProvider}
               resources={[
-                // {
-                //   name: "protected-products",
-                //   list: "/products",
-                //   show: "/products/:id",
-                //   edit: "/products/:id/edit",
-                //   create: "/products/create",
-                //   meta: { label: "Fila 1" },
-                // },
+                {
+                  name: "protected-products",
+                  list: "/products",
+                  show: "/products/:id",
+                  edit: "/products/:id/edit",
+                  create: "/products/create",
+                  meta: { label: "Fila 1" },
+                },
                 {
                   name: "trading-server-machines",
                   list: "/trading-server-machines",
@@ -55,7 +57,9 @@ function App(): JSX.Element {
                   create: "/trading-server-machines/create",
                 },
               ]}
-            >
+              options={{
+                projectId: "N6Ire2-Hexe3X-Tclpd1"
+              }}>
               <Routes>
                 <Route
                   element={
@@ -91,12 +95,9 @@ function App(): JSX.Element {
                     <Route path=":id" element={<ShowMachines />} />
                     <Route path=":id/servers" element={<ShowServers />} />
                     <Route path=":id/accounts" element={<ShowAccounts />} />
-                    <Route path=":id/edit" element={<EditProduct />} />
-                    <Route path="create" element={<CreateProduct />} />
+                    <Route path=":id/edit" element={<EditTradingMachine />} />
+                    <Route path="create" element={<CreateTradingMachine/>} />
                   </Route>
-                  {/* <Route path="/servers">
-                    <Route path=":id" element={<ShowServers />} />
-                  </Route> */}
                 </Route>
                 <Route
                   element={
@@ -113,7 +114,7 @@ function App(): JSX.Element {
           </DevtoolsProvider>
         </AntdApp>
       </ConfigProvider>
-    </BrowserRouter>
+    </BrowserRouter>)
   );
 }
 

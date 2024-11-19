@@ -14,6 +14,14 @@ const EditProduct = () => {
     defaultValue: query?.data?.data?.category?.id,
   });
 
+  console.log(
+    `Proviene del componente Edit ${JSON.stringify(
+      formProps?.initialValues,
+      null,
+      2
+    )}`
+  );
+
   return (
     <Edit saveButtonProps={saveButtonProps}>
       <Form {...formProps} layout="vertical">

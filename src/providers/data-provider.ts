@@ -14,7 +14,7 @@ const fetcher = async (url: string, options?: RequestInit) => {
 };
 
 const dataProvider: DataProvider = {
-  getMany: async ({ resource, ids }) => {
+  getMany: async ({ resource, ids, meta }) => {
     const params = new URLSearchParams();
 
     if (ids) {
@@ -31,6 +31,15 @@ const dataProvider: DataProvider = {
 
     return { data };
   },
+  // getOne: async ({ resource, id, meta }) => {
+  //   const response = await fetcher(`${API_URL}/${resource}/${id}`);
+
+  //   if (response.status < 200 || response.status > 299) throw response;
+
+  //   const data = await response.json();
+
+  //   return { data };
+  // },
   getOne: async ({ id, resource }) => {
     const response = await fetcher(
       `${API_URL}/${resource}?filters[id][$eq]=${id}`
@@ -44,30 +53,42 @@ const dataProvider: DataProvider = {
 
     return { data };
   },
-  // getOne: async ({ id, resource }) => {
-  //   const response = await fetcher(`${API_URL}/${resource}/${id}`);
+  update: async ({ resource, id, variables, meta }) => {
+    console.log("Intentando actualizar registro con documentId:", id);
+    console.log("Variables originales:", variables);
 
-  //   if (response.status < 200 || response.status > 299) {
-  //     throw response;
-  //   }
+    try {
+      // Usar el documentId para la URL
+      const updateUrl = `${API_URL}/${resource}/${variables.documentId}`;
+      console.log("URL de actualización:", updateUrl);
 
-  //   const data = await response.json();
+      // Eliminar documentId de los datos a enviar
+      const { documentId, ...updateData } = variables;
+      console.log("Datos a actualizar (sin documentId):", updateData);
 
-  //   return { data };
-  // },
-  update: async ({ resource, id, variables }) => {
-    const response = await fetch(`${API_URL}/${resource}/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify(variables),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (response.status < 200 || response.status > 299) {
-      throw response;
+      const response = await fetch(updateUrl, {
+        method: "PUT",
+        body: JSON.stringify({
+          data: updateData
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error al actualizar:", errorText);
+        throw new Error(`Error al actualizar: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("Respuesta de actualización:", data);
+      return { data: data.data };
+    } catch (error) {
+      console.error("Error durante la actualización:", error);
+      throw error;
     }
-    const data = await response.json();
-    return { data };
   },
   // getList: async ({ resource, pagination, filters, sorters }) => {
   //   const params = new URLSearchParams();
@@ -150,7 +171,7 @@ const dataProvider: DataProvider = {
   create: async ({ resource, variables }) => {
     const response = await fetcher(`${API_URL}/${resource}`, {
       method: "POST",
-      body: JSON.stringify(variables),
+      body: JSON.stringify({ data: variables }),
       headers: {
         "Content-type": "application/json",
       },
@@ -159,10 +180,53 @@ const dataProvider: DataProvider = {
     if (response.status < 200 || response.status > 299) throw response;
 
     const data = await response.json();
-    return { data };
+    return { data: data.data };
   },
-  deleteOne: () => {
-    throw new Error("Not implemented");
+  deleteOne: async ({ resource, id }) => {
+    console.log("Intentando eliminar registro con documentId:", id);
+    
+    try {
+      // Construir la URL de eliminación usando directamente el documentId
+      const deleteUrl = `${API_URL}/${resource}/${id}`;
+      console.log("URL de eliminación:", deleteUrl);
+
+      // Eliminar el registro
+      const deleteResponse = await fetcher(deleteUrl, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Respuesta de eliminación status:", deleteResponse.status);
+
+      if (!deleteResponse.ok) {
+        console.log("Error al eliminar:", deleteResponse.statusText);
+        const errorText = await deleteResponse.text();
+        console.log("Error detallado:", errorText);
+        throw new Error(`Error al eliminar: ${errorText}`);
+      }
+
+      // En Strapi v4, la respuesta DELETE puede ser vacía
+      try {
+        const responseText = await deleteResponse.text();
+        console.log("Respuesta texto:", responseText);
+        
+        if (responseText) {
+          const deletedData = JSON.parse(responseText);
+          return { data: deletedData.data };
+        } else {
+          console.log("Eliminación exitosa");
+          return { data: null };
+        }
+      } catch (jsonError) {
+        console.log("Eliminación exitosa (sin respuesta JSON)");
+        return { data: null };
+      }
+    } catch (error) {
+      console.error("Error durante la eliminación:", error);
+      throw error;
+    }
   },
   getApiUrl: () => API_URL,
 };

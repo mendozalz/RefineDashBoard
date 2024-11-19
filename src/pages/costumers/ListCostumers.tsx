@@ -1,25 +1,15 @@
 import { useTable, List, ShowButton } from "@refinedev/antd";
-import { Table, Button } from "antd";
+import { Table, Button, Space } from "antd";
 import { useNavigate } from "react-router-dom";
+import { DeleteButton } from "../../components/DeleteButton";
 
 const ListCustomers = () => {
-  const { tableProps } = useTable({
-    resource: "trading-server-machines", // Pasamos solo el endpoint
+  const { tableProps, setFilters } = useTable({
+    resource: "trading-server-machines",
     syncWithLocation: true,
   });
 
-  //const [passwordVisibility, setPasswordVisibility] = useState({});
-
-  console.log("Data Source:", tableProps?.dataSource);
-
-  // const togglePasswordVisibility = (recordId: any) => {
-  //   setPasswordVisibility((prevState) => ({
-  //     ...prevState,
-  //     [recordId]: !prevState[recordId], // Alterna la visibilidad para la fila específica
-  //   }));
-  // };
-
-  //const maskPassword = (password: any) => "•".repeat(password.length);
+ /*  console.log("Data Source:", tableProps?.dataSource); */
 
   const navigate = useNavigate();
 
@@ -40,16 +30,24 @@ const ListCustomers = () => {
     );
   };
 
+  const handleDeleteSuccess = () => {
+    // Recargar la tabla después de eliminar
+    setFilters([], "replace");
+  };
+
+  console.log(`tableProps: ${JSON.stringify(tableProps, null, 2)}`);
+  
+
   return (
     <List>
       <Table {...tableProps} rowKey="id">
-        <Table.Column dataIndex="id" title="id" />
+        <Table.Column dataIndex="id" title="ID" />
         <Table.Column
           dataIndex="trading_machine"
           title="TM"
           render={(server, record) => {
             const isVisible = true;
-
+            //console.log("Record data:", JSON.stringify(record, null, 2));
             return (
               <div style={{ display: "flex", alignItems: "center" }}>
                 {isVisible ? server : "•".repeat(server.length)}
@@ -69,39 +67,19 @@ const ListCustomers = () => {
         />
         <Table.Column dataIndex="server" title="Server" />
         <Table.Column dataIndex="broker" title="Broker" />
-        {/* <Table.Column
-          dataIndex="account"
-          title="Account"
-          render={(account, record) => (
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {account} 
-              <Button
-                type="text"
-                onClick={() =>
-                  navigate(`/trading-server-machines/${record.id}/accounts`)
-                }
-                icon={
-                  <ShowButton hideText size="small" recordItemId={record.id} />
-                }
-              />
-            </div>
-          )}
-        /> */}
-        // ... otras columnas ...
         <Table.Column
           title="Acciones"
-          render={
-            (_, record) => renderAccounts(record.account, record) // Pasa el server real
-          }
+          render={(_, record: any) => (
+            <Space>
+              {renderAccounts(record.account, record)}
+              <DeleteButton 
+                documentId={record.documentId} 
+                onSuccess={handleDeleteSuccess}
+              />
+            </Space>
+          )}
         />
-        <Table.Column
-          dataIndex="funding_account"
-          title={
-            <span>
-              Funding <br /> Account
-            </span>
-          }
-        />
+        <Table.Column dataIndex="funding_account" title="Funding Account" />
         <Table.Column dataIndex="statusCostumer" title="Status" />
       </Table>
     </List>

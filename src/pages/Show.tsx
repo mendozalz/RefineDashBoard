@@ -7,6 +7,8 @@ const ShowProduct = () => {
     query: { data, isLoading },
   } = useShow();
 
+  console.log(`Query ${data?.data}`);
+
   const { data: categoryData, isLoading: categoryIsLoading } = useOne({
     resource: "categories",
     id: data?.data?.id || "",
@@ -14,7 +16,9 @@ const ShowProduct = () => {
       enabled: !!data?.data,
     },
   });
-  console.log(`Proviene de ShowProducts: ${data?.data.id}`);
+  // console.log(
+  //   `Proviene de ShowProducts-2: ${JSON.stringify(data?.data[0].id, null, 2)}`
+  // );
 
   return (
     <Show isLoading={isLoading}>
@@ -22,7 +26,7 @@ const ShowProduct = () => {
       <TextField value={data?.data?.id} />
 
       <Typography.Title level={5}>Name</Typography.Title>
-      <TextField value={data?.data?.name} />
+      <TextField value={data?.data.name} />
 
       <Typography.Title level={5}>Description</Typography.Title>
       <MarkdownField value={data?.data?.description} />
